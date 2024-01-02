@@ -82,11 +82,11 @@ def test_control_output_file(monkeypatch, tmp_path, records, cli_arg):
 
 def test_output_file():
     assert hasattr(outputs, 'control_output'), (
-        'Напишите функцию `control_output` в модуле `output.py`'
+        'Напишите функцию `control_output` в модуле `outputs.py`'
     )
     assert hasattr(outputs, 'pretty_output'), (
-        'Напишите функцию `pretty_output` в модуле `output.py`'
+        'Напишите функцию `pretty_output` в модуле `outputs.py`'
     )
     assert hasattr(outputs, 'file_output'), (
-        'Напишите функцию `file_output` в модуле `output.py`'
+        'Напишите функцию `file_output` в модуле `outputs.py`'
     )
