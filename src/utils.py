@@ -17,10 +17,11 @@ def get_response(session, url):
             f'Нет ответа от страницы {url}, Ошибка соединения: {error}'
         )
 
+
 def find_tag(soup, tag, attrs=None):
     search_tag = soup.find(tag, attrs=attrs if attrs else {})
     if search_tag is None:
-        error_msg =  f'Не найден тег {tag} {attrs}'
+        error_msg = f'Не найден тег {tag} {attrs}'
         logging.error(error_msg, stack_info=True)
         raise ParserFindTagException(error_msg)
     return search_tag

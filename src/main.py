@@ -62,7 +62,7 @@ def whats_new(session):
         ('Ссылка на статью', 'Заголовок', 'Редактор, Автор')
     ]
     for section in tqdm(
-            sections_by_python,desc='Выполнение парсинга'
+            sections_by_python, desc='Выполнение парсинга'
     ):
         version_a_tag = find_tag(section, 'a')
         href = version_a_tag['href']
@@ -133,7 +133,7 @@ def download(session):
 
     with open(archive_path, 'wb') as file:
         file.write(response.content)
-    logging.info(f'Архив загружен')
+    logging.info('Архив загружен')
 
 
 def pep(session):
@@ -170,7 +170,8 @@ def pep(session):
                             'Несовпадающие статусы:\n'
                             f'{pep_link}\n'
                             f'Статус в карте: {card_status}\n'
-                            f'Ожидаемые статусы: {EXPECTED_STATUS[table_status]}\n'
+                            f'Ожидаемые статусы:'
+                            f' {EXPECTED_STATUS[table_status]}\n'
                         )
     for key, value in count_status_in_card.items():
         results.append((key, str(value)))
