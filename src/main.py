@@ -25,11 +25,11 @@ def create_soup(session, url):
         response.text, 'lxml'
     ) if response.status_code == HTTPStatus.OK else None
 
+
 def process_section_item(session, base_url, section_item):
     version_a_tag = find_tag(section_item, 'a')
     href = version_a_tag['href']
     version_link = urljoin(base_url, href)
-    response = get_response(session, version_link)
     soup = create_soup(session, version_link)
 
     if soup is not None:
@@ -62,7 +62,6 @@ def whats_new(session):
     return result
 
 
-
 def latest_versions(session):
     soup = create_soup(session, MAIN_DOC_URL)
     sidebar = find_tag(soup, 'div', attrs={'class': 'sphinxsidebarwrapper'})
@@ -88,7 +87,6 @@ def latest_versions(session):
         results.append((a_tag['href'], version, status))
 
     return results
-
 
 
 def download(session):
@@ -174,6 +172,7 @@ def main():
     results = MODE_TO_FUNCTION[parser_mode](session)
     if results is not None:
         save_results(results, parser_mode, args)
+
 
 if __name__ == '__main__':
     main()

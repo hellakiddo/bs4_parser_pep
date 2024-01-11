@@ -7,5 +7,6 @@ class NoResponseException(Exception):
     """От URL нет ответа."""
     pass
 
+
 class NoVersionsFoundError(Exception):
     pass

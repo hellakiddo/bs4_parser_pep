@@ -16,9 +16,11 @@ def control_output(input_data, cli_args, output_type=None):
     output_type = output_type or cli_args.output
     OUTPUT_TYPES.get(output_type, default_output)(input_data, cli_args)
 
+
 def default_output(input_data, cli_args):
     for row in input_data:
         print(*row)
+
 
 def pretty_output(input_data, cli_args):
     table = PrettyTable()
@@ -39,6 +41,7 @@ def file_output(input_data, cli_args):
         writer = csv.writer(file)
         writer.writerows(input_data)
     logging.info(LOG_MESSAGE_FILE_SAVED.format(file_path))
+
 
 OUTPUT_TYPES = {
     'pretty': pretty_output,
