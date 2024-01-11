@@ -1,15 +1,14 @@
-from prettytable import PrettyTable
-
 import csv
 import datetime as dt
 import logging
 import os
+from prettytable import PrettyTable
 
 from constants import (
-    BASE_DIR, DATETIME_FORMAT,
-    LOG_MESSAGE_FILE_SAVED,
+    BASE_DIR, DATETIME_FORMAT, LOG_MESSAGE_FILE_SAVED,
     LOG_MESSAGE_RESULTS_SAVED
 )
+
 
 
 def control_output(input_data, cli_args, output_type=None):

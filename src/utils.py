@@ -1,6 +1,11 @@
 import logging
+from bs4 import BeautifulSoup
+
 from requests import RequestException
-from exceptions import ParserFindTagException, NoResponseException
+
+from exceptions import NoResponseException, ParserFindTagException
+from constants import PARSE_FORMAT
+
 
 
 def get_response(session, url):
@@ -25,3 +30,9 @@ def find_tag(soup, tag, attrs=None):
         logging.error(error_msg, stack_info=True)
         raise ParserFindTagException(error_msg)
     return search_tag
+
+
+def create_soup(session, url):
+    return BeautifulSoup(
+        get_response(session, url).text, PARSE_FORMAT
+    )

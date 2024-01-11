@@ -9,4 +9,5 @@ class NoResponseException(Exception):
 
 
 class NoVersionsFoundError(Exception):
+    """Версия не найдена."""
     pass
