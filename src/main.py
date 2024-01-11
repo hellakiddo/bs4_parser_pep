@@ -10,7 +10,9 @@ from collections import defaultdict
 
 from configs import configure_argument_parser, configure_logging
 from constants import (
-    BASE_DIR, EXPECTED_STATUS, MAIN_DOC_URL, MAIN_PEP_URL
+    BASE_DIR, EXPECTED_STATUS, MAIN_DOC_URL,
+    MAIN_PEP_URL, LOG_MESSAGE_START, LOG_MESSAGE_ARGS,
+    LOG_MESSAGE_CACHE_CLEARED
 )
 from outputs import save_results
 from src.exceptions import NoVersionsFoundError
@@ -157,11 +159,6 @@ MODE_TO_FUNCTION = {
     'pep': pep,
 }
 
-LOG_MESSAGE_START = 'Парсер начал работать'
-LOG_MESSAGE_ARGS = 'Аргументы командной строки: {}'
-LOG_MESSAGE_CACHE_CLEARED = 'Кэш очищен'
-LOG_MESSAGE_RESULTS_SAVED = 'Данные сохранены в {}'
-LOG_MESSAGE_END = 'Парсер завершил работу.'
 
 def main():
     configure_logging()

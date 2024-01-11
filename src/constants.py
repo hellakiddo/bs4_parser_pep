@@ -31,3 +31,4 @@ LOG_MESSAGE_CACHE_CLEARED = 'Кэш очищен'
 LOG_MESSAGE_RESULTS_SAVED = 'Данные сохранены в {}'
 LOG_MESSAGE_END = 'Парсер завершил работу.'
 LOG_MESSAGE_FILE_SAVED = 'Файл с результатами был сохранён: {}'
+
