@@ -26,6 +26,7 @@ LOG_ERROR_MESSAGE = "Ошибка при создании soup для {}: {}"
 LOG_MAIN_ERROR_MESSAGE = "Произошла ошибка: {}"
 NO_SIDEBAR_FUNCTIONS = 'На боковой панели не найдено ни одной версии'
 
+
 def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
     soup = create_soup(session, whats_new_url)
@@ -55,6 +56,7 @@ def whats_new(session):
         logging.error(error_message)
 
     return result
+
 
 def latest_versions(session):
     soup = create_soup(session, MAIN_DOC_URL)

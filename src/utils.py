@@ -28,7 +28,9 @@ def find_tag(soup, tag, attrs=None):
         raise ParserFindTagException(error_message)
     return search_tag
 
+
 PARSE_FORMAT = 'lxml'
+
 
 def create_soup(session, url, parse_format=PARSE_FORMAT):
     return BeautifulSoup(get_response(session, url).text, parse_format)

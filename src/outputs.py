@@ -1,7 +1,6 @@
 import csv
 import datetime as dt
 import logging
-import os
 
 from prettytable import PrettyTable
 
@@ -12,6 +11,7 @@ from constants import (
 
 LOG_MESSAGE_FILE_SAVED = 'Файл с результатами был сохранён: {}'
 LOG_MESSAGE_RESULTS_SAVED = 'Данные сохранены в {}'
+
 
 def control_output(input_data, cli_args, output_type=None):
     output_type = output_type or cli_args.output
