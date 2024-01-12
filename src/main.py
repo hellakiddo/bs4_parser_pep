@@ -25,17 +25,17 @@ LOG_MESSAGE_END = 'Парсер завершил работу.'
 LOG_ERROR_MESSAGE = "Ошибка при создании soup для {}: {}"
 LOG_MAIN_ERROR_MESSAGE = "Произошла ошибка: {}"
 NO_SIDEBAR_FUNCTIONS = 'На боковой панели не найдено ни одной версии'
-
+ERROR_MESSAGE = "Ошибка при создании soup для {}: {}"
 
 def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
     soup = create_soup(session, whats_new_url)
-    sections_by_python = soup.select(
+    section_by_python = soup.select(
         '#what-s-new-in-python div.toctree-wrapper li.toctree-l1 a'
     )
     result = [('Ссылка на статью', 'Заголовок', 'Редактор, Автор')]
     error_messages = []
-    for version_a_tag in tqdm(sections_by_python, desc='Выполнение парсинга'):
+    for version_a_tag in tqdm(section_by_python, desc='Выполнение парсинга'):
         href = version_a_tag['href']
         version_link = urljoin(whats_new_url, href)
         if version_a_tag:
@@ -48,10 +48,7 @@ def whats_new(session):
             processed_data = (version_link, h1.text, dl_text)
             result.append(processed_data)
         except requests.RequestException as e:
-            error_message = "Ошибка при создании soup для {}: {}".format(
-                version_link, e
-            )
-            error_messages.append(error_message)
+            error_messages.append(ERROR_MESSAGE.format(version_link, e))
     for error_message in error_messages:
         logging.error(error_message)
 

@@ -13,9 +13,8 @@ LOG_MESSAGE_FILE_SAVED = 'Файл с результатами был сохра
 LOG_MESSAGE_RESULTS_SAVED = 'Данные сохранены в {}'
 
 
-def control_output(input_data, cli_args, output_type=None):
-    output_type = output_type or cli_args.output
-    OUTPUT_TYPES.get(output_type)(input_data, cli_args)
+def control_output(input_data, cli_args):
+    OUTPUT_TYPES.get(cli_args.output )(input_data, cli_args)
 
 
 def default_output(input_data, cli_args):
@@ -39,8 +38,7 @@ def file_output(input_data, cli_args):
     file_name = f'{parser_mode}_{formatted_dt}.csv'
     file_path = f'{results_dir}/{file_name}'
     with open(file_path, 'w', encoding='utf-8') as file:
-        writer = csv.writer(file, dialect='excel')
-        writer.writerows(input_data)
+        csv.writer(file, dialect=csv.excel).writerows(input_data)
     logging.info(LOG_MESSAGE_FILE_SAVED.format(file_path))
 
 
