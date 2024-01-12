@@ -4,7 +4,7 @@ from bs4 import BeautifulSoup
 
 from exceptions import ParserFindTagException
 
-ERROR_MESSAGE_GET_RESPONSE ='Нет ответа от страницы {}, Ошибка соединения: {}'
+ERROR_MESSAGE_GET_RESPONSE = 'Нет ответа от страницы {}, Ошибка соединения: {}'
 ERROR_MESSAGE_FIND_TAG = 'Не найден тег {} {}'
 
 
@@ -24,7 +24,6 @@ def find_tag(soup, tag, attrs=None):
             ERROR_MESSAGE_FIND_TAG.format(tag, attrs)
         )
     return search_tag
-
 
 
 def create_soup(session, url, parse_format='lxml'):

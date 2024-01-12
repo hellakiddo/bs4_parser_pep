@@ -14,7 +14,7 @@ LOG_MESSAGE_RESULTS_SAVED = 'Данные сохранены в {}'
 
 
 def control_output(input_data, cli_args):
-    OUTPUT_TYPES.get(cli_args.output )(input_data, cli_args)
+    OUTPUT_TYPES.get(cli_args.output)(input_data, cli_args)
 
 
 def default_output(input_data, cli_args):
