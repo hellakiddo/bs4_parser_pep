@@ -2,47 +2,59 @@ import logging
 import re
 from collections import defaultdict
 from urllib.parse import urljoin
+
+import requests
 import requests_cache
 from tqdm import tqdm
 
 from configs import configure_argument_parser, configure_logging
 from constants import (
     BASE_DIR, EXPECTED_STATUS, MAIN_DOC_URL,
-    MAIN_PEP_URL, LOG_MESSAGE_START, LOG_MESSAGE_ARGS,
-    LOG_MESSAGE_CACHE_CLEARED,
-    NO_SIDEBAR_FUNCTIONS, DOWNLOADS_DIRECTORY, LOG_MESSAGE_TEMPLATE
+    MAIN_PEP_URL,
+    DOWNLOADS_DIRECTORY, LOG_MESSAGE_TEMPLATE
 )
 from exceptions import NoVersionsFoundError
 from outputs import control_output
 from utils import find_tag, create_soup
 
+DOWNLOAD_SUCCESS_MESSAGE = 'Архив успешно загружен'
+LOG_MESSAGE_START = 'Парсер начал работать'
+LOG_MESSAGE_ARGS = 'Аргументы командной строки: {}'
+LOG_MESSAGE_CACHE_CLEARED = 'Кэш очищен'
+LOG_MESSAGE_END = 'Парсер завершил работу.'
+LOG_ERROR_MESSAGE = "Ошибка при создании soup для {}: {}"
+LOG_MAIN_ERROR_MESSAGE = "Произошла ошибка: {}"
+NO_SIDEBAR_FUNCTIONS = 'На боковой панели не найдено ни одной версии'
 
 def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
     soup = create_soup(session, whats_new_url)
     sections_by_python = soup.select(
-        '#what-s-new-in-python div.toctree-wrapper li.toctree-l1'
+        '#what-s-new-in-python div.toctree-wrapper li.toctree-l1 a'
     )
     result = [('Ссылка на статью', 'Заголовок', 'Редактор, Автор')]
-
-    for section_item in tqdm(sections_by_python, desc='Выполнение парсинга'):
-        version_a_tag = find_tag(section_item, 'a')
+    error_messages = []
+    for version_a_tag in tqdm(sections_by_python, desc='Выполнение парсинга'):
+        href = version_a_tag['href']
+        version_link = urljoin(whats_new_url, href)
         if version_a_tag:
-            href = version_a_tag['href']
-            version_link = urljoin(whats_new_url, href)
-            try:
-                soup = create_soup(session, version_link)
-                h1 = find_tag(soup, 'h1')
-                dl = find_tag(soup, 'dl')
-                dl_text = dl.text.replace('\n', ' ')
-                processed_data = (version_link, h1.text, dl_text)
-                result.append(processed_data)
-            except Exception as e:
-                logging.error(
-                    f"Ошибка при создании soup для {version_link}: {e}"
-                )
-    return result
+            continue
+        try:
+            soup = create_soup(session, version_link)
+            h1 = find_tag(soup, 'h1')
+            dl = find_tag(soup, 'dl')
+            dl_text = dl.text.replace('\n', ' ')
+            processed_data = (version_link, h1.text, dl_text)
+            result.append(processed_data)
+        except requests.RequestException as e:
+            error_message = "Ошибка при создании soup для {}: {}".format(
+                version_link, e
+            )
+            error_messages.append(error_message)
+    for error_message in error_messages:
+        logging.error(error_message)
 
+    return result
 
 def latest_versions(session):
     soup = create_soup(session, MAIN_DOC_URL)
@@ -85,7 +97,7 @@ def download(session):
 
     with open(archive_path, 'wb') as file:
         file.write(response.content)
-    logging.info('Архив загружен')
+    logging.info(DOWNLOAD_SUCCESS_MESSAGE)
 
 
 def pep(session):
@@ -95,9 +107,9 @@ def pep(session):
     )
     peps_row = main_tag.find_all('tr')
     count_status_in_cards = defaultdict(int)
-    results = []
-    log_message = []
-    for pep_row in tqdm(peps_row[1:], desc="Processing PEP rows"):
+    log_messages = []
+
+    for pep_row in tqdm(peps_row[1:], desc="Обработка строк PEP"):
         pep_href_tag = pep_row.a['href']
         pep_link = urljoin(MAIN_PEP_URL, pep_href_tag)
         try:
@@ -108,8 +120,9 @@ def pep(session):
             main_card = find_tag(
                 main_card_tag, 'dl', {'class': 'rfc2822 field-list simple'}
             )
-        except Exception as e:
-            logging.error(f"Ошибка при создании soup для {pep_link}: {e}")
+        except requests.RequestException as e:
+            log_messages.append(LOG_ERROR_MESSAGE.format(pep_link, e))
+            continue
         for row, tag in enumerate(main_card):
             if tag.name == 'dt' and tag.text == 'Status:':
                 continue
@@ -118,18 +131,16 @@ def pep(session):
             if len(peps_row[row + 1].td.text) != 1:
                 table_status = peps_row[row + 1].td.text[1:]
                 if card_status[0] != table_status:
-                    log_message += LOG_MESSAGE_TEMPLATE.format(
+                    log_messages.append(LOG_MESSAGE_TEMPLATE.format(
                         pep_link, card_status, ', '.join(
                             EXPECTED_STATUS[table_status]
                         )
-                    )
-                continue
-    for key, value in count_status_in_cards.items():
-        results.append((key, str(value)))
-    results.append(('Total', len(peps_row) - 1))
-    logging.info(log_message)
-
-    return results
+                    ))
+    return [
+        ('Статус', 'Количество'),
+        *count_status_in_cards.items(),
+        ('Всего', len(peps_row) - 1),
+    ]
 
 
 MODE_TO_FUNCTION = {
@@ -156,7 +167,7 @@ def main():
         if results is not None:
             control_output(results, parser_mode, args)
     except Exception as e:
-        logging.error(f"Произошла ошибка: {e}")
+        logging.error(LOG_MAIN_ERROR_MESSAGE.format(e))
 
 
 if __name__ == '__main__':

@@ -26,21 +26,12 @@ LOG_MESSAGE_TEMPLATE = (
     'Ожидаемые статусы: {}\n'
 )
 
-LOG_DIR = BASE_DIR / 'logs'
-RESULTS_DIR = f'{BASE_DIR}/results'
+LOG_DIR = 'logs'
+RESULTS_DIR = 'results'
 DOWNLOADS_DIRECTORY = 'downloads'
 
 
 PRETTY_OUTPUT = 'pretty'
 FILE_OUTPUT = 'file'
-
-LOG_MESSAGE_START = 'Парсер начал работать'
-LOG_MESSAGE_ARGS = 'Аргументы командной строки: {}'
-LOG_MESSAGE_CACHE_CLEARED = 'Кэш очищен'
-LOG_MESSAGE_RESULTS_SAVED = 'Данные сохранены в {}'
-LOG_MESSAGE_END = 'Парсер завершил работу.'
-LOG_MESSAGE_FILE_SAVED = 'Файл с результатами был сохранён: {}'
-
-PARSE_FORMAT = 'lxml'
 
 NO_SIDEBAR_FUNCTIONS = 'На боковой панели не найдено ни одной версии'
