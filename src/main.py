@@ -17,7 +17,6 @@ from outputs import control_output
 from utils import find_tag, create_soup
 
 
-
 def whats_new(session):
     whats_new_url = urljoin(MAIN_DOC_URL, 'whatsnew/')
     soup = create_soup(session, whats_new_url)
@@ -120,7 +119,9 @@ def pep(session):
                 table_status = peps_row[row + 1].td.text[1:]
                 if card_status[0] != table_status:
                     log_message += LOG_MESSAGE_TEMPLATE.format(
-                        pep_link, card_status, ', '.join(EXPECTED_STATUS[table_status])
+                        pep_link, card_status, ', '.join(
+                            EXPECTED_STATUS[table_status]
+                        )
                     )
                 continue
     for key, value in count_status_in_cards.items():
