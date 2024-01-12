@@ -10,7 +10,6 @@ from constants import (
 )
 
 
-
 def control_output(input_data, cli_args, output_type=None):
     output_type = output_type or cli_args.output
     OUTPUT_TYPES.get(output_type, default_output)(input_data, cli_args)

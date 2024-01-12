@@ -1,4 +1,5 @@
 import logging
+import re
 from collections import defaultdict
 from urllib.parse import urljoin
 import requests_cache
@@ -14,7 +15,6 @@ from constants import (
 from exceptions import NoVersionsFoundError
 from outputs import control_output
 from utils import find_tag, create_soup
-
 
 
 
@@ -39,9 +39,10 @@ def whats_new(session):
                 processed_data = (version_link, h1.text, dl_text)
                 result.append(processed_data)
             except Exception as e:
-                logging.error(f"Ошибка при создании soup для {version_link}: {e}")
+                logging.error(
+                    f"Ошибка при создании soup для {version_link}: {e}"
+                )
     return result
-
 
 
 def latest_versions(session):
@@ -116,15 +117,12 @@ def pep(session):
             card_status = tag.next_sibling.next_sibling.string
             count_status_in_cards[card_status] += 1
             if len(peps_row[row + 1].td.text) != 1:
-                    table_status = peps_row[row + 1].td.text[1:]
-                    if card_status[0] != table_status:
-                        log_message += LOG_MESSAGE_TEMPLATE.format(
-                            pep_link, card_status, ', '.join(
-                                EXPECTED_STATUS[table_status]
-                            )
-                        )
-                    continue
-
+                table_status = peps_row[row + 1].td.text[1:]
+                if card_status[0] != table_status:
+                    log_message += LOG_MESSAGE_TEMPLATE.format(
+                        pep_link, card_status, ', '.join(EXPECTED_STATUS[table_status])
+                    )
+                continue
     for key, value in count_status_in_cards.items():
         results.append((key, str(value)))
     results.append(('Total', len(peps_row) - 1))

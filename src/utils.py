@@ -7,7 +7,6 @@ from exceptions import NoResponseException, ParserFindTagException
 from constants import PARSE_FORMAT
 
 
-
 def get_response(session, url):
     try:
         response = session.get(url)
